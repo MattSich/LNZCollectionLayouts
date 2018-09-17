@@ -143,9 +143,13 @@ open class LNZSnapToCenterCollectionViewLayout: UICollectionViewLayout, FocusedC
         if footerHeight == nil {
             footerHeight = delegate?.collectionView?(collection, layout: self, referenceSizeForFooterInSection: 0).height ?? 0
         }
+
         //This method is always called right after the prepare method, so at this point sectionInsetLeft + sectionInsetRight is already determined
         let w: CGFloat = sectionInsetLeft + sectionInsetRight - interitemSpacing + (itemSize.width + interitemSpacing) * CGFloat(itemCount ?? 0)
-        let h: CGFloat = (headerHeight ?? 0.0) + sectionInsetTop + sectionInsetBottom + itemSize.height + (footerHeight ?? 0.0)
+
+        let nonNilHeaderHeight: CGFloat = headerHeight ?? 0.0
+        let nonNilFooterHeight: CGFloat = footerHeight ?? 0.0
+        let h: CGFloat = nonNilHeaderHeight + sectionInsetTop + sectionInsetBottom + itemSize.height + nonNilFooterHeight
         
         return CGSize(width: w, height: h)
     }
