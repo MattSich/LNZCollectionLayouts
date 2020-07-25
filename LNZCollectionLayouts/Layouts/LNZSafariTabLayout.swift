@@ -199,7 +199,7 @@ public class LNZSafariLayout: UICollectionViewLayout, UIGestureRecognizerDelegat
 
     // MARK : Layouting Logic
     public override func layoutAttributesForElements(in rect: CGRect) -> [UICollectionViewLayoutAttributes]? {
-        let attributesObjects = visibleIndexes(in: rect).flatMap(layoutAttributesForItem)
+        let attributesObjects = visibleIndexes(in: rect).compactMap(layoutAttributesForItem)
         return attributesObjects
     }
     
@@ -327,7 +327,7 @@ public class LNZSafariLayout: UICollectionViewLayout, UIGestureRecognizerDelegat
         let touch = panGesture.location(in: collection)
         let velocity = panGesture.velocity(in: collection)
         
-        guard fabs(velocity.x) > fabs(velocity.y),
+        guard abs(velocity.x) > abs(velocity.y),
             let item = self.item(forYPosition: touch.y) else { return false }
         
         return delegate.collectionView?(collection, layout: self, canDeleteItemAt: IndexPath(item: item, section: 0)) ?? false
@@ -374,13 +374,21 @@ public class LNZSafariLayout: UICollectionViewLayout, UIGestureRecognizerDelegat
             invalidationContext.interactivelyDeletingIndexPaths = nil
             
             invalidateLayout(with: invalidationContext)
+        @unknown default:
+            currentDeletingIndexPath = nil
+
+            let invalidationContext = LNZSafariLayoutInvalidationContext()
+            invalidationContext.interactivelyDeleting = false
+            invalidationContext.interactivelyDeletingIndexPaths = nil
+
+            invalidateLayout(with: invalidationContext)
         }
     }
 }
 
 // MARK: - Animator -
 public extension LNZSafariLayout {
-    public func animator(forItem indexPath: IndexPath) -> SafariAnimator {
+    func animator(forItem indexPath: IndexPath) -> SafariAnimator {
         let animator = SafariAnimator(presentingIndexPath: indexPath) {[weak self] (origin, size, angle) -> CATransform3D in
             guard let `self` = self else { return CATransform3DIdentity }
             return self.final3dTransform(forItemOrigin: origin, andSize: size, enforcingAngle: angle)

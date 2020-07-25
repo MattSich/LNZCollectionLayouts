@@ -99,7 +99,7 @@ public class SafariAnimator: NSObject, UIViewControllerAnimatedTransitioning {
         
         var safariController: SafariLayoutContaining! = from as? SafariLayoutContaining
         if safariController == nil {
-            safariController = from.childViewControllers.last as? SafariLayoutContaining
+            safariController = from.children.last as? SafariLayoutContaining
         }
         
         //This Transition must be performed from a SafariLayoutContaining viewController to a ViewController
@@ -216,7 +216,7 @@ public class SafariAnimator: NSObject, UIViewControllerAnimatedTransitioning {
 
         var safariController: SafariLayoutContaining! = to as? SafariLayoutContaining
         if safariController == nil {
-            safariController = to.childViewControllers.last as? SafariLayoutContaining
+            safariController = to.children.last as? SafariLayoutContaining
         }
         
         //This Transition must be performed from  a ViewController to a SafariLayoutContaining viewController
